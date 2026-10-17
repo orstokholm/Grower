@@ -65,7 +65,7 @@ html.is-loading,html.is-loading body{overflow:hidden;height:100%}
 --radius-xs:6px;--radius-btn:10px;--radius-chip:12px;--radius-panel:clamp(16px,calc(15px + .3vw),20px);--radius-pill:999px;
 --ease-out:cubic-bezier(.22,.61,.36,1);--dur-fast:120ms;--dur-base:200ms;
 --topbar-h:56px;
---stage-w:80px;--stage-h:112px;
+--stage-h:clamp(170px,26vh,220px);
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -115,7 +115,7 @@ p{margin:0;text-wrap:pretty}
 .sheet .btn{margin-top:12px;width:100%}
 
 /* ===== Stage (the 3D stand) ===== */
-.stage{position:fixed;z-index:20;top:calc(var(--topbar-h) + 16px);left:8px;width:var(--stage-w);height:var(--stage-h);background:var(--fill-50);border:1px solid var(--line-200);border-radius:16px;box-shadow:0 6px 20px rgba(14,17,22,.12);overflow:hidden}
+.stage{position:fixed;z-index:20;bottom:0;inset-inline:0;height:calc(var(--stage-h) + env(safe-area-inset-bottom));background:var(--fill-50);border-top:1px solid var(--line-200);border-radius:20px 20px 0 0;box-shadow:0 -6px 20px rgba(14,17,22,.10);overflow:hidden}
 .stage canvas{position:absolute;inset:0;width:100%;height:100%}
 #fallback{display:none}
 .stage.is-fallback #gl{display:none}.stage.is-fallback #fallback{display:block}
@@ -125,7 +125,7 @@ p{margin:0;text-wrap:pretty}
 .theme-chip .sw i.on{outline-color:var(--blue-500)}
 
 /* ===== Layout ===== */
-.layout{max-width:1360px;margin:0 auto;padding:16px var(--page-gutter) 24px calc(var(--stage-w) + 16px)}
+.layout{max-width:1360px;margin:0 auto;padding:16px var(--page-gutter) calc(var(--stage-h) + 24px)}
 .flow{display:grid;gap:16px;min-width:0}
 .panel{background:#fff;border:1px solid var(--line-200);border-radius:var(--radius-panel);padding:var(--panel-pad)}
 .panel-lg{padding:var(--panel-pad-lg)}
@@ -195,7 +195,7 @@ p{margin:0;text-wrap:pretty}
 .foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;padding:16px 20px;font-size:14px;color:var(--body-2)}
 
 /* Floating WhatsApp (phones) */
-.wa-fab{position:fixed;z-index:25;bottom:calc(16px + env(safe-area-inset-bottom));left:16px;width:56px;height:56px;border-radius:50%;background:var(--wa-green);color:var(--wa-ink);display:flex;align-items:center;justify-content:center;border:1px solid rgba(11,31,18,.12);
+.wa-fab{position:fixed;z-index:25;bottom:calc(var(--stage-h) + 12px + env(safe-area-inset-bottom));left:16px;width:56px;height:56px;border-radius:50%;background:var(--wa-green);color:var(--wa-ink);display:flex;align-items:center;justify-content:center;border:1px solid rgba(11,31,18,.12);
   opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out),background-color var(--dur-fast) var(--ease-out)}
 .wa-fab svg{width:28px;height:28px;fill:currentColor}
 .wa-fab.is-on{opacity:1;transform:none;pointer-events:auto}
@@ -216,7 +216,7 @@ p{margin:0;text-wrap:pretty}
   .nav{display:flex}.topbar-wa{display:inline-flex}.menu-btn,.sheet{display:none !important}
   .wordmark .mark{width:27px;height:32px}.wordmark span:last-child{font-size:25px}
   .layout{display:grid;grid-template-columns:45fr 55fr;gap:clamp(20px,2.4vw,40px);align-items:start;padding:24px var(--page-gutter) 32px}
-  .stage{position:sticky;inset:auto;width:auto;box-shadow:none;top:calc(var(--topbar-h) + 24px);height:calc(100vh - var(--topbar-h) - 48px);height:calc(100svh - var(--topbar-h) - 48px);min-height:420px;border:1px solid var(--line-200);border-radius:20px}
+  .stage{position:sticky;inset:auto;box-shadow:none;top:calc(var(--topbar-h) + 24px);height:calc(100vh - var(--topbar-h) - 48px);height:calc(100svh - var(--topbar-h) - 48px);min-height:420px;border:1px solid var(--line-200);border-radius:20px}
   .theme-chip{top:16px;inset-inline-start:50%;transform:translateX(50%)}
   .flow{gap:24px}
   .wa-fab{display:none}
@@ -312,7 +312,7 @@ p{margin:0;text-wrap:pretty}
 </header>
 
 <div class="layout">
-  <!-- The 3D stand. Desktop: sticky on the right. Phone: small card in the top-left corner. -->
+  <!-- The 3D stand. Desktop: sticky on the right. Phone: a short band along the bottom of the screen. -->
   <aside class="stage" id="stage" aria-label="סטנד הדירוגים בתלת־ממד">
     <canvas id="gl" aria-hidden="true"></canvas>
     <canvas id="fallback" role="img" aria-label="סטנד אקריליק שקוף עם כרטיס דירוג: NFC וקוד QR"></canvas>
@@ -589,7 +589,10 @@ function paintInsert(t){const c=colorsAt(t);drawInsert(fctx,FW,c);drawBack(bctx,
 /* ---------- Scroll mapping ---------- */
 let anchors=[0,1,2,3];
 /* the "reading line" */
-function readLine(){return innerHeight*0.45;}
+function readLine(){
+  const st=document.getElementById('stage');
+  return getComputedStyle(st).position==='fixed'?st.getBoundingClientRect().top*0.45:innerHeight*0.45;
+}
 function measure(){
   const line=readLine();
   anchors=THEME_ANCHORS.map((id,i)=>{if(i===0)return 0;const el=document.getElementById(id);return el.getBoundingClientRect().top+scrollY-line;});
