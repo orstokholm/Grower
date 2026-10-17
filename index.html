@@ -65,12 +65,11 @@ html.is-loading,html.is-loading body{overflow:hidden;height:100%}
 --radius-xs:6px;--radius-btn:10px;--radius-chip:12px;--radius-panel:clamp(16px,calc(15px + .3vw),20px);--radius-pill:999px;
 --ease-out:cubic-bezier(.22,.61,.36,1);--dur-fast:120ms;--dur-base:200ms;
 --topbar-h:56px;
---stage-h:42vh;
+--stage-w:80px;--stage-h:112px;
 }
-@supports (height:1svh){:root{--stage-h:clamp(250px,42svh,460px)}}
 
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-h) + var(--stage-h) + 12px);-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-h) + 12px);-webkit-text-size-adjust:100%}
 body{margin:0;font-family:var(--font-body);font-size:var(--fs-body);line-height:var(--lh-body);color:var(--ink-900);-webkit-font-smoothing:antialiased;
   background-color:#FFFFFF;background-image:var(--blob-tile);background-size:max(100vw,1100px) auto;background-repeat:repeat-y;background-position:top center}
 img,svg,canvas{display:block}
@@ -116,7 +115,7 @@ p{margin:0;text-wrap:pretty}
 .sheet .btn{margin-top:12px;width:100%}
 
 /* ===== Stage (the 3D stand) ===== */
-.stage{position:fixed;z-index:20;top:var(--topbar-h);inset-inline:0;height:var(--stage-h);background:var(--fill-50);border-bottom:1px solid var(--line-200);overflow:hidden}
+.stage{position:fixed;z-index:20;top:calc(var(--topbar-h) + 16px);left:8px;width:var(--stage-w);height:var(--stage-h);background:var(--fill-50);border:1px solid var(--line-200);border-radius:16px;box-shadow:0 6px 20px rgba(14,17,22,.12);overflow:hidden}
 .stage canvas{position:absolute;inset:0;width:100%;height:100%}
 #fallback{display:none}
 .stage.is-fallback #gl{display:none}.stage.is-fallback #fallback{display:block}
@@ -126,7 +125,7 @@ p{margin:0;text-wrap:pretty}
 .theme-chip .sw i.on{outline-color:var(--blue-500)}
 
 /* ===== Layout ===== */
-.layout{max-width:1360px;margin:0 auto;padding:calc(var(--stage-h) + 16px) var(--page-gutter) 24px}
+.layout{max-width:1360px;margin:0 auto;padding:16px var(--page-gutter) 24px calc(var(--stage-w) + 16px)}
 .flow{display:grid;gap:16px;min-width:0}
 .panel{background:#fff;border:1px solid var(--line-200);border-radius:var(--radius-panel);padding:var(--panel-pad)}
 .panel-lg{padding:var(--panel-pad-lg)}
@@ -140,7 +139,7 @@ p{margin:0;text-wrap:pretty}
 .hero-brand .mark{width:clamp(56px,6.4vw,88px);height:clamp(66px,7.6vw,104px)}
 .hero-brand span:last-child{font-family:var(--font-display);font-weight:600;font-size:clamp(56px,calc(30px + 5vw),104px);line-height:.95;letter-spacing:-.01em}
 .hero h1{font-weight:600;font-size:var(--fs-display);line-height:var(--lh-display);letter-spacing:var(--ls-display);margin-top:20px}
-.hero .sub{margin-top:24px;font-size:clamp(21px,calc(17px + 1.1vw),28px);line-height:1.5;font-weight:500;color:var(--head);max-width:30ch}
+.hero .sub,.about .sub{margin-top:24px;font-size:clamp(21px,calc(17px + 1.1vw),28px);line-height:1.5;font-weight:500;color:var(--head);max-width:30ch}
 .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 .h2{font-weight:600;font-size:var(--fs-h2);line-height:var(--lh-heading);letter-spacing:var(--ls-heading)}
 .lead{margin-top:14px;font-size:var(--fs-body-lg);color:var(--body-2);max-width:40ch}
@@ -217,7 +216,7 @@ p{margin:0;text-wrap:pretty}
   .nav{display:flex}.topbar-wa{display:inline-flex}.menu-btn,.sheet{display:none !important}
   .wordmark .mark{width:27px;height:32px}.wordmark span:last-child{font-size:25px}
   .layout{display:grid;grid-template-columns:45fr 55fr;gap:clamp(20px,2.4vw,40px);align-items:start;padding:24px var(--page-gutter) 32px}
-  .stage{position:sticky;inset:auto;top:calc(var(--topbar-h) + 24px);height:calc(100vh - var(--topbar-h) - 48px);height:calc(100svh - var(--topbar-h) - 48px);min-height:420px;border:1px solid var(--line-200);border-radius:20px}
+  .stage{position:sticky;inset:auto;width:auto;box-shadow:none;top:calc(var(--topbar-h) + 24px);height:calc(100vh - var(--topbar-h) - 48px);height:calc(100svh - var(--topbar-h) - 48px);min-height:420px;border:1px solid var(--line-200);border-radius:20px}
   .theme-chip{top:16px;inset-inline-start:50%;transform:translateX(50%)}
   .flow{gap:24px}
   .wa-fab{display:none}
@@ -313,7 +312,7 @@ p{margin:0;text-wrap:pretty}
 </header>
 
 <div class="layout">
-  <!-- The 3D stand. Desktop: sticky on the right. Phone: pinned under the top bar. -->
+  <!-- The 3D stand. Desktop: sticky on the right. Phone: small card in the top-left corner. -->
   <aside class="stage" id="stage" aria-label="סטנד הדירוגים בתלת־ממד">
     <canvas id="gl" aria-hidden="true"></canvas>
     <canvas id="fallback" role="img" aria-label="סטנד אקריליק שקוף עם כרטיס דירוג: NFC וקוד QR"></canvas>
@@ -325,11 +324,16 @@ p{margin:0;text-wrap:pretty}
       <div class="hero-brand" aria-label="Grower"><span class="mark" aria-hidden="true"></span><span aria-hidden="true">Grower</span></div>
       <span class="eyebrow">Grower<b>סטנד הדירוגים</b></span>
       <h1 id="h-hero">עוזרים לעסק שלך לצמוח — דרך דירוגים</h1>
-      <p class="sub">סטנד קטן על הדלפק. הלקוח מצמיד את הטלפון או סורק, ומגיע ישר לדף הביקורות שלך בגוגל. בלי אפליקציה, בלי חיפוש, בלי מאמץ.</p>
       <div class="cta-row">
         <a class="btn btn-wa" data-wa href="https://wa.me/" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg>דברו איתנו בוואטסאפ</a>
         <a class="btn btn-secondary" href="#how">איך זה עובד<svg aria-hidden="true"><use href="#i-arrow-down"/></svg></a>
       </div>
+    </section>
+
+    <!-- 6.1b The product -->
+    <section class="panel panel-lg about" id="about" aria-labelledby="h-about">
+      <h2 class="h2" id="h-about">מה זה סטנד הדירוגים?</h2>
+      <p class="sub">סטנד קטן על הדלפק. הלקוח מצמיד את הטלפון או סורק, ומגיע ישר לדף הביקורות שלך בגוגל. בלי אפליקציה, בלי חיפוש, בלי מאמץ.</p>
     </section>
 
     <!-- 6.2 How it works -->
@@ -584,12 +588,8 @@ function paintInsert(t){const c=colorsAt(t);drawInsert(fctx,FW,c);drawBack(bctx,
 
 /* ---------- Scroll mapping ---------- */
 let anchors=[0,1,2,3];
-/* the "reading line": on phones the stand covers the top of the screen, so it sits below the stand */
-function readLine(){
-  const st=document.getElementById('stage');
-  if(getComputedStyle(st).position==='fixed'){const b=st.getBoundingClientRect().bottom;return b+(innerHeight-b)*0.3;}
-  return innerHeight*0.45;
-}
+/* the "reading line" */
+function readLine(){return innerHeight*0.45;}
 function measure(){
   const line=readLine();
   anchors=THEME_ANCHORS.map((id,i)=>{if(i===0)return 0;const el=document.getElementById(id);return el.getBoundingClientRect().top+scrollY-line;});
